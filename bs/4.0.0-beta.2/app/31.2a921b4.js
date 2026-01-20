@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[31],{358:function(n,e,t){"use strict";function s(){const n=document.querySelector(".main-header");n&&window.addEventListener("scroll",()=>{window.scrollY>=2*window.innerHeight/3?n.classList.remove("transparent"):n.classList.add("transparent")})}t.r(e),window.addEventListener("load",s),e.default=s}}]);
