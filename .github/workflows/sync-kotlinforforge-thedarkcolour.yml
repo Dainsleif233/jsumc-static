@@ -1,0 +1,50 @@
+name: Sync KotlinForForge thedarkcolour
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync upstream directory
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git clone --depth 1 --branch site https://github.com/thedarkcolour/KotlinForForge.git upstream
+
+          rm -rf kotlinforforge/thedarkcolour
+          mkdir -p kotlinforforge/thedarkcolour
+          cp -a upstream/thedarkcolour/. kotlinforforge/thedarkcolour/
+
+          find kotlinforforge/thedarkcolour -type f \( -name '*.html' -o -name '*.css' \) -delete
+
+          rm -rf upstream
+
+      - name: Commit and push changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git add kotlinforforge/thedarkcolour
+
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+
+          git commit -m 'chore: sync KotlinForForge thedarkcolour'
+          git push
